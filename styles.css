@@ -51,7 +51,6 @@ body {
   font-weight: 700;
   color: var(--color-primary);
   letter-spacing: -0.5px;
-  
 }
 
 .nav {
@@ -444,6 +443,12 @@ body {
   box-shadow: 0 6px 20px rgba(212, 165, 116, 0.4);
 }
 
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .form-message {
   padding: 1rem;
   border-radius: 10px;
@@ -699,4 +704,3 @@ body {
     width: 100%;
   }
 }
-/* Removed duplicate nav rule

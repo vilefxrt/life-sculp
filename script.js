@@ -1,10 +1,16 @@
-// Set minimum date to today
+// script.js
+
 document.addEventListener("DOMContentLoaded", () => {
+  // ⚡ Substitua pelo seu link do Web App do Google Apps Script
+  const WEB_APP_URL =
+    "https://script.google.com/macros/s/AKfycbx22ee6DRqU3NNf_TkcL42UARtwLiKhWmk0Yobei3tRP1D8ExfqIm-E-taeHwMU7iGhPw/exec"
+
+  // Define data mínima para o input
   const dateInput = document.getElementById("date")
   const today = new Date().toISOString().split("T")[0]
   dateInput.setAttribute("min", today)
 
-  // Phone mask
+  // Máscara de telefone
   const phoneInput = document.getElementById("phone")
   phoneInput.addEventListener("input", (e) => {
     let value = e.target.value.replace(/\D/g, "")
@@ -21,66 +27,84 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = value
   })
 
-  // Form submission
+  // Submissão do formulário
   const form = document.getElementById("bookingForm")
   const formMessage = document.getElementById("formMessage")
+  const submitButton = form.querySelector(".btn-submit")
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault()
 
-    // Get form data
+    submitButton.disabled = true
+    submitButton.textContent = "Enviando..."
+    formMessage.style.display = "none"
+
     const formData = {
       name: document.getElementById("name").value,
       email: document.getElementById("email").value,
       phone: document.getElementById("phone").value,
-      treatment: "Limpeza de Pele Grátis", // Fixed treatment
+      treatment: "Microagulhamento Facial",
       date: document.getElementById("date").value,
-      time: document.getElementById("time").value,
+      period: document.getElementById("period").value,
       message: document.getElementById("message").value,
+      timestamp: new Date().toISOString(),
     }
 
-    // Simulate form submission
-    console.log("Form submitted:", formData)
+    console.log("[v0] Enviando dados:", formData)
 
-    // Show success message
-    formMessage.className = "form-message success"
-    formMessage.textContent =
-      "Agendamento confirmado! Entraremos em contato em breve para confirmar sua limpeza de pele grátis."
+    try {
+      const params = new URLSearchParams()
+      Object.keys(formData).forEach((key) => {
+        params.append(key, formData[key])
+      })
 
-    // Reset form
-    form.reset()
+      console.log("[v0] Fazendo requisição para:", WEB_APP_URL)
 
-    // Hide message after 5 seconds
+      const response = await fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors", // Importante para Google Apps Script
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params.toString(),
+      })
+
+      console.log("[v0] Resposta recebida")
+
+      formMessage.className = "form-message success"
+      formMessage.style.display = "block"
+      formMessage.textContent = "✅ Agendamento enviado com sucesso! Entraremos em contato em breve."
+      form.reset()
+
+      formMessage.scrollIntoView({ behavior: "smooth", block: "center" })
+    } catch (error) {
+      console.error("[v0] Erro ao enviar:", error)
+      formMessage.className = "form-message error"
+      formMessage.style.display = "block"
+      formMessage.textContent =
+        "❌ Erro ao enviar o formulário. Por favor, tente novamente ou entre em contato pelo WhatsApp."
+    } finally {
+      submitButton.disabled = false
+      submitButton.textContent = "Garantir Meu Microagulhamento Grátis"
+    }
+
     setTimeout(() => {
       formMessage.style.display = "none"
-    }, 5000)
-
-    // In a real application, you would send this data to a server
-    // Example:
-    // fetch('/api/booking', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(formData)
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     formMessage.className = 'form-message success';
-    //     formMessage.textContent = 'Agendamento enviado com sucesso!';
-    // })
-    // .catch(error => {
-    //     formMessage.className = 'form-message error';
-    //     formMessage.textContent = 'Erro ao enviar agendamento. Tente novamente.';
-    // });
+    }, 8000)
   })
 
-  // Smooth scroll for navigation links
+  // Rolagem suave para âncoras
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
       e.preventDefault()
       const target = document.querySelector(this.getAttribute("href"))
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" })
     })
+  })
+
+  // Efeito de sombra no header
+  const header = document.querySelector("header")
+  window.addEventListener("scroll", () => {
+    header.style.boxShadow = window.scrollY > 50 ? "0 2px 10px rgba(0, 0, 0, 0.1)" : "none"
   })
 })
