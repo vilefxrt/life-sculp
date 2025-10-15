@@ -58,6 +58,7 @@ img {
   font-weight: 700;
   color: var(--color-primary);
   letter-spacing: -0.5px;
+  align-self: center;
 }
 
 .nav {
@@ -93,15 +94,16 @@ img {
 }
 
 .badge {
-  display: inline-block;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+  display: inline;
+  background: none;
+  color: var(--color-primary);
+  padding: 0;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
+
 
 .hero-title {
   font-size: 3rem;
